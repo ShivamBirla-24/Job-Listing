@@ -1,52 +1,44 @@
 const mongoose = require('mongoose');
 
-const { Schema } = new mongoose.Schema;
-
-const jobdetailSchema = Schema({
-    companyName: {
-        type: String,
-        required: true
+const jobdetailSchema = new mongoose.Schema({
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+    companyName: { type: String, required: true },
+    remote: { type: String, enum: ['Remote', 'Office'], required: true },
+    skillsRequired:{
+      type: [String], 
+      required: true
     },
-    logoUrl: {
-        type: String,
-        required : true
+    recruiterName: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now },
+    logoURL: {
+      type: String,
+      required: true
     },
-    jobPosition: {
-        type: String,
-        required: true
+    position: {
+      type: String,
+      required: true
     },
-    monthlySalary: {
-        type: Number,
-        required : true
+    salary: {
+      type: String,
+      required: true
     },
     jobType: {
-        type: Boolean,
-        required: true
-    },
-    remoteOffice: {
-        type: Boolean,
-        required: true
+      type: String,
+      enum: ['Full-time', 'Part-time'],
+      required: true
     },
     location: {
-        type: String,
-        required: true
+      type: String,
+      required: true
     },
-    jobDescription: {
-        type: String,
-        required: true
+    description: {
+      type: String,
+      required: true
     },
-    aboutCompany: {
-        type: String,
-        required: true
+    about: {
+      type: String,
+      required: true
     },
-    skills: {
-        type: Array,
-        required: true
-    },
-    info: {
-        type: String,
-        required: true
-    }
-})
+  })
 
-module.export = mongoose.model('User', jobdetailSchema); 
+module.exports =  mongoose.model('JobDetail',jobdetailSchema)

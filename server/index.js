@@ -6,18 +6,28 @@ const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
 const dotenv = require('dotenv')
 
+//Importing Routes
+const authRoutes = require('./routes/auth')
+
 dotenv.config()
 
 const app = express()
 
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+
+//Register route
+app.use(authRoutes)
+
 app.get('/', (req, res) => {
-    res.send("hello")
+    res.json("Server is running")
 })
+
 
 app.listen(process.env.PORT, () => {
     mongoose.connect(process.env.MONGODB_URL)
         .then(() => {
-        console.log('Server created succssfully')
+        console.log('Server is running')
         })
         .catch((error) => {
             console.log(error);
