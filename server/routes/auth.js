@@ -4,8 +4,6 @@ const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 const router = express.Router()
 
-const errorHandler = require('../middlewares/errorHandler')
-
 dotenv.config()
 
 //User Collection from data base 
@@ -37,13 +35,13 @@ router.post('/register', async (req, res) => {
         User.create({ name, email, mobile, password: encPassword })
 
         //return success message 
-        res.json({
+        res.status(200).json({
             success: true,
             msg: "Sign up successfully"
         })
         
     } catch (error) {
-        errorHandler(res,error)
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 })
 
@@ -54,7 +52,7 @@ router.post('/login', async (req, res) => {
         //if anyone of the field is empty then return 
         if (!email || !password) {
             return res.status(400).json({
-                message: 'All fields are requires'
+                message: 'All fields are required'
             })
         }
 
@@ -79,17 +77,16 @@ router.post('/login', async (req, res) => {
         }
 
         //token generated
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY)
+        const token = jwt.sign({ userId: user._id }, "shhhhh")
         
         //sending response after successfull login
-
         res.status(200).json({
             message: "Logged in successfully",
             token
         })
     }
     catch (error) {
-        errorHandler(res, error)
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

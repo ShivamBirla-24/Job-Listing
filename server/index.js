@@ -8,6 +8,7 @@ const dotenv = require('dotenv')
 
 //Importing Routes
 const authRoutes = require('./routes/auth')
+const jobRoutes = require('./routes/job')
 
 dotenv.config()
 
@@ -18,6 +19,9 @@ app.use(bodyParser.json())
 
 //Register route
 app.use(authRoutes)
+
+//job route(protected route)
+app.use(jobRoutes)
 
 app.get('/', (req, res) => {
     res.json("Server is running")
