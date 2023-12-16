@@ -160,7 +160,22 @@ router.get('/posts', async (req, res) => {
     }
   });
 
-
-
-
+// api to get job posts detail
+router.get('/posts/:id', async (req, res) => {
+    const jobId = req.params.id;
+  
+    try {
+      const jobPost = await JobDetails.findById(jobId);
+  
+      if (!jobPost) {
+        return res.status(404).json({ message: 'Job post not found' });
+      }
+  
+      return res.json({ jobPost });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+  
 module.exports = router
