@@ -18,11 +18,12 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 //Register route
-app.use(authRoutes)
+app.use('/api/auth',authRoutes)
 
 //job route(protected route)
-app.use(jobRoutes)
+app.use('/api/job',jobRoutes)
 
+//Health route for checking server is running
 app.get('/', (req, res) => {
     res.json("Server is running")
 })

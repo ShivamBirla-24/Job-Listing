@@ -7,13 +7,14 @@ dotenv.config()
 const isLoggedin = (req, res, next) => {
     try {
         const { token } = req.headers;
-        const user = jwt.verify(token, "shhhhh")
-        if (!user) {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
+        if (!decoded) {
             return res.status(401).json({
                 message: "Please Login First"
             })
         }
         else {
+            req.body.user = decoded.user
             next()
         }
     }
@@ -22,7 +23,7 @@ const isLoggedin = (req, res, next) => {
         res.status(500).json({
             message: "Internal Server Error!!"
         })
-        }
+    }
 }
 
 module.exports = isLoggedin

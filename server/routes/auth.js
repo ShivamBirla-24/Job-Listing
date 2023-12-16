@@ -10,8 +10,11 @@ dotenv.config()
 const User = require('../db_models/user')
 
 //Register Route
+
 router.post('/register', async (req, res) => {
-    try {
+    try {router.get('/register', (req, res) => {
+        res.send("hellooooo world")
+    })
         const { name, email, mobile, password } = req.body
 
         //Checking all the fields are mandatory
@@ -37,6 +40,7 @@ router.post('/register', async (req, res) => {
         //return success message 
         res.status(200).json({
             success: true,
+            recruiterName : name,
             msg: "Sign up successfully"
         })
         
@@ -77,11 +81,12 @@ router.post('/login', async (req, res) => {
         }
 
         //token generated
-        const token = jwt.sign({ userId: user._id }, "shhhhh")
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY)
         
         //sending response after successfull login
         res.status(200).json({
             message: "Logged in successfully",
+            recruiterName: user.name,
             token
         })
     }
