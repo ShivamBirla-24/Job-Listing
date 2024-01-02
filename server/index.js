@@ -1,40 +1,41 @@
-const express = require('express')
-const cors = require('cors')
-const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const bodyParser = require('body-parser')
-const dotenv = require('dotenv')
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
 
 //Importing Routes
-const authRoutes = require('./routes/auth')
-const jobRoutes = require('./routes/job')
+const authRoutes = require("./routes/auth");
+const jobRoutes = require("./routes/job");
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
+const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 //Register route
-app.use('/api/auth',authRoutes)
+app.use("/api/auth", authRoutes);
 
 //job route(protected route)
-app.use('/api/job',jobRoutes)
+app.use("/api/job", jobRoutes);
 
 //Health route for checking server is running
-app.get('/', (req, res) => {
-    res.json("Server is running")
-})
-
+app.get("/", (req, res) => {
+  res.json("Server is running");
+});
 
 app.listen(process.env.PORT, () => {
-    mongoose.connect(process.env.MONGODB_URL)
-        .then(() => {
-        console.log('Server is running')
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-})
+  mongoose
+    .connect(process.env.MONGODB_URL)
+    .then(() => {
+      console.log("Server is running and database is connected");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});

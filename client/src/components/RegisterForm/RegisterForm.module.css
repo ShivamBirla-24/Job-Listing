@@ -1,0 +1,56 @@
+.main_container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 60vw;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 3%;
+  padding-left: 13%;
+  font-family: sans-serif;
+}
+
+h1 {
+  font-family: sans-serif;
+}
+
+h3 {
+  color: #525252;
+  font-family: sans-serif;
+}
+
+.inputbox {
+  height: 50px;
+  width: 71.5%;
+  border: 1px solid #c2c2c2;
+  border-radius: 5px;
+  color: #525252;
+  font-weight: 700;
+  outline: none;
+  padding-left: 15px;
+}
+
+.isSignedin {
+  display: flex;
+  gap: 10px;
+}
+
+.checkbox_content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.accountButton {
+  height: 50px;
+  width: 30%;
+  outline: none;
+  border: none;
+  background-color: #ed5353;
+  color: white;
+  font-size: larger;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
