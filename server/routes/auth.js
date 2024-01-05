@@ -34,14 +34,14 @@ router.post("/register", async (req, res) => {
     const token = jwt.sign({ userEmail: email }, process.env.JWT_SECRET_KEY);
 
     //creating the user filled data when user is not present
-    User.create({ name, email, mobile, password: encPassword });
+    await User.create({ name, email, mobile, password: encPassword });
     //return success message
     res.status(200).json({
       success: true,
       recruiterName: name,
       msg: "Sign up successfully",
-      userEmail : email,
-      token
+      userEmail: email,
+      token,
     });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
       message: "Logged in successfully!!",
       recruiterName: user.name,
       user: email,
-      token
+      token,
     });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });

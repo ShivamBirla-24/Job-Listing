@@ -21,7 +21,7 @@ router.post("/create", isLoggedin, async (req, res) => {
     // extracting all the fields from req body
     const {
       companyName,
-      logoURL,
+      logoUrl,
       jobPosition,
       salary,
       jobType,
@@ -31,12 +31,12 @@ router.post("/create", isLoggedin, async (req, res) => {
       aboutCompany,
       skillsRequired,
       information,
+      recruiterName,
     } = req.body;
-
     //checking for all the fields are filled
     if (
       !companyName ||
-      !logoURL ||
+      !logoUrl ||
       !jobPosition ||
       !salary ||
       !jobType ||
@@ -45,23 +45,26 @@ router.post("/create", isLoggedin, async (req, res) => {
       !jobDescription ||
       !aboutCompany ||
       !skillsRequired ||
-      !information
+      !information ||
+      !recruiterName
     ) {
       return res.status(400).json({
         message: "All the fields are required",
       });
     }
 
-    const skills = [];
+    let skills = [];
 
     if (typeof skillsRequired === "string") {
-      skills = skillsRequired.split(",").map(skillsRequired.trim());
+      skills = skillsRequired
+        .split(",")
+        .map((skillsRequired) => skillsRequired.trim().toLowerCase())
     }
     //creating the job entry in the database
     await JobDetails.create({
       companyName,
-      logoURL,
-      jobPosition,
+      logoUrl,
+      jobPosition:jobPosition.toLowerCase(),
       salary,
       jobType,
       remote,
@@ -70,6 +73,7 @@ router.post("/create", isLoggedin, async (req, res) => {
       aboutCompany,
       skillsRequired: skills,
       information,
+      recruiterName,
     });
 
     res.status(200).json({
@@ -77,12 +81,12 @@ router.post("/create", isLoggedin, async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 //api for editing the job
-router.patch("/edit/:jobId", isLoggedin, async (req, res) => {
+router.put("/edit/:jobId", isLoggedin, async (req, res) => {
   try {
     const { jobId } = req.params;
 
@@ -103,6 +107,7 @@ router.patch("/edit/:jobId", isLoggedin, async (req, res) => {
       aboutCompany,
       skillsRequired,
       information,
+      recruiterName,
     } = req.body;
 
     const updatedJob = {};
@@ -154,6 +159,10 @@ router.patch("/edit/:jobId", isLoggedin, async (req, res) => {
       updatedJob.information = information;
     }
 
+    if (recruiterName) {
+      updatedJob.recruiterName = recruiterName;
+    }
+
     JobDetails.findByIdAndUpdate(jobId, updatedJob, {
       new: true,
       runValidators: true,
@@ -187,25 +196,22 @@ router.patch("/edit/:jobId", isLoggedin, async (req, res) => {
 //api to list all the jobs with filters based on skills and jobPosition
 
 router.get("/posts", async (req, res) => {
-  const { jobPosition, skillsRequired } = req.body;
-
+  const { jobPosition, skillsRequired } = req.query;
   try {
     let query = {};
-
+    
     if (jobPosition) {
-      query.jobPosition = jobPosition;
+      query.jobPosition = jobPosition.toLocaleLowerCase(); // query => {jobPosition : "Frontend"}
     }
-
+    
     if (skillsRequired) {
-      query.skillsRequired = { $in: skillsRequired.split(",") };
+      query.skillsRequired = { $in : skillsRequired.split(",").map((skill)=> skill.trim().toLocaleLowerCase())};
     }
-    console.log(query);
     const jobPosts = await JobDetails.find(query).sort({ createdAt: -1 });
-    console.log(jobPosts);
-    return res.json({ jobPosts });
+    return res.status(200).json(jobPosts);
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" })
   }
 });
 
@@ -220,9 +226,8 @@ router.get("/posts/:id", async (req, res) => {
       return res.status(404).json({ message: "Job post not found" });
     }
 
-    return res.json({ jobPost });
+    return res.status(200).json({ jobPost });
   } catch (err) {
-    console.error(err);
     return res.status(500).json({ message: "Internal server error" });
   }
 });

@@ -5,11 +5,11 @@ const jobdetailSchema = new mongoose.Schema({
 
   companyName: { type: String, required: true },
 
-  logoURL: {
+  logoUrl: {
     type: String,
     required: true,
   },
-  
+
   jobPosition: {
     type: String,
     required: true,
@@ -22,11 +22,15 @@ const jobdetailSchema = new mongoose.Schema({
 
   jobType: {
     type: String,
-    enum: ["Full Time", "Part Time"],
+    enum: ["Full Time", "Part Time", "Internship"],
     required: true,
   },
 
-  remote: { type: String, enum: ["Remote", "Office"], required: true },
+  remote: {
+    type: String,
+    enum: ["Remote", "Office", "Hybrid"],
+    required: true,
+  },
 
   location: {
     type: String,
@@ -42,13 +46,15 @@ const jobdetailSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  
+
   skillsRequired: {
     type: [String],
     required: true,
   },
 
   information: { type: String, required: true },
+
+  recruiterName: { type: String, required: true },
 
   createdAt: { type: Date, default: Date.now },
 });

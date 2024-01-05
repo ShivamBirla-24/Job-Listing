@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import styles from './RegisterForm.module.css'
-import {Link, useNavigate} from 'react-router-dom'
-import { toast } from 'react-toastify';
-import axios from 'axios';
+import React, { useState } from "react";
+import styles from "./RegisterForm.module.css";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -11,29 +11,35 @@ function RegisterForm() {
     name: "",
     email: "",
     mobile: "",
-    password: ""
+    password: "",
   });
 
   const checkboxClick = () => {
     setcheckBox(!checkBox);
-  }
+  };
 
   const onChange = (e) => {
-    const { name ,value} = e.target;
+    const { name, value } = e.target;
     setformData({
       ...formData,
-      [name]: value
-    })
-  }
+      [name]: value,
+    });
+  };
 
-  const isValid = (regex,string)=> {
+  const isValid = (regex, string) => {
     const check = regex.test(string);
     return check;
-  }
+  };
 
   const handleClick = (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.mobile || !formData.password || !checkBox) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.mobile ||
+      !formData.password ||
+      !checkBox
+    ) {
       toast.error("All the fields are required!!", {
         position: "top-center",
         autoClose: 4000,
@@ -44,13 +50,12 @@ function RegisterForm() {
         progress: undefined,
         theme: "light",
       });
-    }
-    else if (
+    } else if (
       !isValid(
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
         formData.email
       ) ||
-      !isValid(/^[6-9]\d{9}$/,formData.mobile)
+      !isValid(/^[6-9]\d{9}$/, formData.mobile)
     ) {
       toast.error("Please enter a valid Email or Mobile no.", {
         position: "top-center",
@@ -62,31 +67,30 @@ function RegisterForm() {
         progress: undefined,
         theme: "light",
       });
-    }
-    else {
+    } else {
       axios
         .post("http://localhost:5000/api/auth/register", formData)
         .then((response) => {
           if (response.status === 200) {
-                window.localStorage.setItem("user", response.data.userEmail);
-                window.localStorage.setItem(
-                  "recruiterName",
-                  response.data.recruiterName
-                );
-                window.localStorage.setItem("token", response.data.token);
-                toast.success("User Registered Successfully!!", {
-                  position: "top-center",
-                  autoClose: 4000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                });
-                navigate("/job-posts");
-              }
-          })
+            window.localStorage.setItem("user", response.data.userEmail);
+            window.localStorage.setItem(
+              "recruiterName",
+              response.data.recruiterName
+            );
+            window.localStorage.setItem("token", response.data.token);
+            toast.success("User Registered Successfully!!", {
+              position: "top-center",
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+            navigate("/job-posts");
+          }
+        })
         .catch((error) => {
           if (error.response.status === 409) {
             toast.warning(error.response.data, {
@@ -113,7 +117,7 @@ function RegisterForm() {
           }
         });
     }
-  }
+  };
 
   return (
     <div className={styles.main_container}>

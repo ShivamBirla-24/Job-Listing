@@ -1,0 +1,55 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.nav_container {
+  width: 100vw;
+  height: 12vh;
+  background-color: #ed5353;
+  border-bottom-left-radius: 35px;
+  border-bottom-right-radius: 35px;
+  color: whitesmoke;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 3.5%;
+  align-items: center;
+}
+
+.buttondiv {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav_container .logoutbtn {
+  outline: none;
+  border: none;
+  color: #ed5353;
+  background-color: whitesmoke;
+  height: 35px;
+  width: 100px;
+  font-size: large;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.nav_container .loginbtn {
+  outline: none;
+  border: 1.5px solid white;
+  background-color: #ed5353;
+  color: whitesmoke;
+  height: 35px;
+  width: 100px;
+  font-size: large;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.buttondiv p {
+  font-size: larger;
+  font-weight: 500;
+}
