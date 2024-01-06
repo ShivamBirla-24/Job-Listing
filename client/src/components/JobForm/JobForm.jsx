@@ -1,11 +1,15 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import styles from './JobForm.module.css';
-import { toast } from 'react-toastify';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import styles from "./JobForm.module.css";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 function JobForm() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [edit, setEdit] = useState(false);
+  const [id, setId] = useState("");
   const [jobForm, setjobForm] = useState({
     companyName: "",
     logoUrl: "",
@@ -17,16 +21,51 @@ function JobForm() {
     jobDescription: "",
     aboutCompany: "",
     skillsRequired: "",
-    information:""
+    information: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setjobForm((prev) => ({
       ...prev,
-      [name]:value
-    }))
-  }
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+    async function fetchdata() {
+      const { id, edit } = location.state;
+      if (edit) {
+        setEdit(edit);
+      }
+      if (id) {
+        setId(id);
+        try {
+          const response = await axios.get(
+            `http://localhost:5000/api/job/posts/${id}`
+          );
+          if (response.status === 200) {
+            const data = response.data.jobPost;
+            setjobForm({ ...data });
+          } else {
+            toast.warning("Job Not Found!!", {
+              position: "top-center",
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+    fetchdata();
+  }, [location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,32 +112,31 @@ function JobForm() {
       });
       return;
     }
-    
+
     try {
       const data = { ...jobForm, recruiterName };
-      console.log(data);
       const response = await axios.post(
         "http://localhost:5000/api/job/create",
         data,
         {
           headers: {
-            "Content-Type":"application/json",
-            "Accept": "application/json",
-            "Authorization": token
-          }
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: token,
+          },
         }
       );
       if (response.status === 200) {
-       toast.success("Job created successfully", {
-         position: "top-center",
-         autoClose: 4000,
-         hideProgressBar: false,
-         closeOnClick: true,
-         pauseOnHover: true,
-         draggable: true,
-         progress: undefined,
-         theme: "light",
-       });
+        toast.success("Job created successfully", {
+          position: "top-center",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         navigate("/");
       } else {
         toast.error("Something went wrong!!Please try again later", {
@@ -111,14 +149,101 @@ function JobForm() {
           progress: undefined,
           theme: "light",
         });
-     }
+      }
+    } catch (error) {
+      console.log(error);
     }
-    catch (error) {
-      console.log(error)
+  };
+
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    const recruiterName = localStorage.getItem("recruiterName");
+
+    if (!token) {
+      toast.warning("Please Login First!!", {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      navigate("/login");
+      return;
     }
 
-  }
-  
+    if (
+      !jobForm.companyName ||
+      !jobForm.aboutCompany ||
+      !jobForm.information ||
+      !jobForm.jobDescription ||
+      !jobForm.jobPosition ||
+      !jobForm.jobType ||
+      !jobForm.location ||
+      !jobForm.logoUrl ||
+      !jobForm.remote ||
+      !jobForm.salary ||
+      !jobForm.skillsRequired
+    ) {
+      toast.warning("All the fields are required!!", {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
+    try {
+      const data = { ...jobForm, recruiterName };
+      const response = await axios.put(
+        `http://localhost:5000/api/job/edit/${id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: token,
+          },
+        }
+      );
+      if (response.status === 200) {
+        toast.success(response.data.message, {
+          position: "top-center",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        navigate("/");
+      }
+      if (response.status === 404) {
+        toast.error(response.data.message, {
+          position: "top-center",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className={styles.main_container}>
       <h1>Add Job Description</h1>
@@ -160,7 +285,7 @@ function JobForm() {
         <input
           id="salary"
           name="salary"
-          type="text"
+          type="number"
           placeholder="Enter amount in rupees"
           value={jobForm.salary}
           onChange={handleChange}
@@ -168,7 +293,12 @@ function JobForm() {
       </div>
       <div className={styles.inputdivs}>
         <label htmlFor="jobType">Job Type</label>
-        <select name="jobType" id="jobType" value={jobForm.jobType} onChange={handleChange}>
+        <select
+          name="jobType"
+          id="jobType"
+          value={jobForm.jobType}
+          onChange={handleChange}
+        >
           <option value="">Select</option>
           <option value="Full Time">Full Time</option>
           <option value="Part Time">Part Time</option>
@@ -177,7 +307,12 @@ function JobForm() {
       </div>
       <div className={styles.inputdivs}>
         <label htmlFor="remote">Remote/Office</label>
-        <select name="remote" id="remote" value={jobForm.remote} onChange={handleChange}>
+        <select
+          name="remote"
+          id="remote"
+          value={jobForm.remote}
+          onChange={handleChange}
+        >
           <option value="">Select</option>
           <option value="Remote">Remote</option>
           <option value="Office">Office</option>
@@ -238,11 +373,26 @@ function JobForm() {
         />
       </div>
       <div className={styles.buttonContainer}>
-        <button className={styles.cancelbtn} onClick={()=>{navigate("/job-posts")}}>Cancel</button>
-        <button className={styles.addbtn} onClick={handleSubmit}>+ Add Job</button>
+        <button
+          className={styles.cancelbtn}
+          onClick={() => {
+            navigate("/job-posts");
+          }}
+        >
+          Cancel
+        </button>
+        {edit ? (
+          <button className={styles.addbtn} onClick={handleEdit}>
+            Edit Job
+          </button>
+        ) : (
+          <button className={styles.addbtn} onClick={handleSubmit}>
+            + Add Job
+          </button>
+        )}
       </div>
     </div>
   );
 }
 
-export default JobForm
+export default JobForm;

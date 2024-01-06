@@ -1,7 +1,9 @@
 import React from 'react'
 import styles from './JobCard.module.css';
+import { useNavigate } from 'react-router-dom';
 
 function JobCard({ data }) {
+    const navigate = useNavigate();
     const token = localStorage.getItem("token");
   return (
     <div className={styles.main_card}>
@@ -9,7 +11,7 @@ function JobCard({ data }) {
         <img
           src={data.logoUrl}
           alt="company logo"
-          style={{ height: "60%", width: "12%", paddingTop: "4.5%" }}
+          style={{ height: "70px", width: "50px", paddingTop: "4.5%" }}
         />
         <div className={styles.details_container}>
           <p
@@ -31,15 +33,20 @@ function JobCard({ data }) {
 
       <div className={styles.right_container}>
         <div className={styles.skills}>
-            {data.skillsRequired.map((item, index) => {
+            {data.skillsRequired.map((item) => {
                 return (
                    <span key={item}>{item.charAt(0).toUpperCase()+item.slice(1)}</span>
               )
           })}
         </div>
         <div className={styles.button_container}>
-          {token ? <button className={styles.edit}>Edit Job</button> : <></>}
-          <button className={styles.viewdetail}>View Details</button>
+                  {token ? <button className={styles.edit} onClick={() => navigate('/add-job',
+                      { state: { id: data._id , edit:true} })}>
+                      Edit Job
+                  </button> : <></>}
+                  <button className={styles.viewdetail} onClick={() => navigate('/job-detail', {
+              state:{id:data._id}
+          })}>View Details</button>
         </div>
       </div>
     </div>

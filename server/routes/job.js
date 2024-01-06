@@ -86,18 +86,16 @@ router.post("/create", isLoggedin, async (req, res) => {
 });
 
 //api for editing the job
-router.put("/edit/:jobId", isLoggedin, async (req, res) => {
+router.put("/edit/:jobId", isLoggedin,async (req, res) => {
   try {
     const { jobId } = req.params;
-
     //checking id is valid mongoose object id or not
     if (!mongoose.Types.ObjectId.isValid(jobId)) {
       return res.status(400).json({ error: "Invalid user ID" });
     }
-
     const {
       companyName,
-      logoURL,
+      logoUrl,
       jobPosition,
       salary,
       jobType,
@@ -107,84 +105,46 @@ router.put("/edit/:jobId", isLoggedin, async (req, res) => {
       aboutCompany,
       skillsRequired,
       information,
-      recruiterName,
+      recruiterName
     } = req.body;
-
-    const updatedJob = {};
-
-    if (companyName) {
-      updatedJob.companyName = companyName;
-    }
-
-    if (logoURL) {
-      updatedJob.logoURL = logoURL;
-    }
-
-    if (jobPosition) {
-      updatedJob.jobPosition = jobPosition;
-    }
-
-    if (salary) {
-      updatedJob.salary = salary;
-    }
-
-    if (jobType) {
-      updatedJob.jobType = jobType;
-    }
-
-    if (remote) {
-      updatedJob.remote = remote;
-    }
-
-    if (location) {
-      updatedJob.location = location;
-    }
-
-    if (jobDescription) {
-      updatedJob.jobDescription = jobDescription;
-    }
-
-    if (aboutCompany) {
-      updatedJob.aboutCompany = aboutCompany;
-    }
-
-    if (skillsRequired) {
-      const skills = skillsRequired
+    
+    let allSkills = [];
+    if (typeof skillsRequired === 'string') {
+      allSkills = skillsRequired
         .split(",")
-        .map((skillsRequire) => skillsRequire.trim());
-      updatedJob.skillsRequired = skills;
+        .map((item) => item.trim().toLowerCase());
+    } else {
+      allSkills = skillsRequired;
     }
-
-    if (information) {
-      updatedJob.information = information;
-    }
-
-    if (recruiterName) {
-      updatedJob.recruiterName = recruiterName;
-    }
-
-    JobDetails.findByIdAndUpdate(jobId, updatedJob, {
+    const updatedData = {
+      companyName,
+      logoUrl,
+      jobPosition:jobPosition.toLocaleLowerCase(),
+      salary,
+      jobType,
+      remote,
+      location,
+      jobDescription,
+      aboutCompany,
+      skillsRequired:allSkills,
+      information,
+      recruiterName,
+    };
+    const jobafterUpdate = await JobDetails.findByIdAndUpdate(jobId, updatedData, {
       new: true,
-      runValidators: true,
+      runValidators:true
     })
-      .exec()
-      .then((editedJob) => {
-        if (!editedJob) {
-          return res.status(404).json({
-            message: "User Not Found!",
-          });
-        }
-        console.log(editedJob);
-        res.status(200).json({
-          message: "Job Updated Successfully",
-        });
+
+    if (!jobafterUpdate) {
+      return res.status(404).json({
+        message:"Job Not Found!!"
       })
-      .catch((error) => {
-        res.status(401).json({
-          message: "Validation Error",
-          error: error.message,
-        });
-      });
+    }
+
+    res.status(200).json({
+      message: "Job Updated Successfully!",
+      updatedJob : jobafterUpdate
+    })
   } catch (error) {
     res.status(500).json({
       error,

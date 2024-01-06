@@ -1,55 +1,54 @@
-import React, { useState ,useEffect} from 'react'
-import styles from './JobPosts.module.css'
-import SearchImg from '../../assests/images/SearchImg.png'
-import { useNavigate } from 'react-router-dom';
-import X from '../../assests/images/xImg.png';
-import axios from 'axios';
-import JobCard from '../JobCard/JobCard';
+import React, { useState, useEffect } from "react";
+import styles from "./JobPosts.module.css";
+import SearchImg from "../../assests/images/SearchImg.png";
+import { useNavigate } from "react-router-dom";
+import X from "../../assests/images/xImg.png";
+import axios from "axios";
+import JobCard from "../JobCard/JobCard";
 
 function JobPosts() {
-    const navigate = useNavigate();
-    const [skillsRequired, setSkillsRequired] = useState([]);
-    const [jobs, setJobs] = useState([]);
-    const [jobPosition, setjobPosition] = useState("");
-    
-    const token = localStorage.getItem('token');
-    
-    
-    const handleChange = (e) => {
-        setjobPosition(e.target.value);
-    }
+  const navigate = useNavigate();
+  const [skillsRequired, setSkillsRequired] = useState([]);
+  const [jobs, setJobs] = useState([]);
+  const [jobPosition, setjobPosition] = useState("");
 
-    const selectSkill = (e) => {
-        if (!skillsRequired.includes(e.target.value) && e.target.value.length>0) {
-            setSkillsRequired(
-                prev => [...prev, e.target.value]
-            );
-        }
-    }
-    
-    const handleRemove = (e) => {
-        const skill = e.target.id;
-        const index = skillsRequired.indexOf(skill);
-        skillsRequired.splice(index, 1);
-        setSkillsRequired([...skillsRequired]);
-    }
+  const token = localStorage.getItem("token");
 
-    useEffect(() => {
-      async function fetchData() {
-        try {
-          const response = await axios.get(
-            `http://localhost:5000/api/job/posts?skillsRequired=${[skillsRequired]}&jobPosition=${jobPosition}`
-          );
-            if (response.status === 200) {
-                setJobs(response.data);
-          }
-        } catch (error) {
-          console.log(error);
+  const handleChange = (e) => {
+    setjobPosition(e.target.value);
+  };
+
+  const selectSkill = (e) => {
+    if (!skillsRequired.includes(e.target.value) && e.target.value.length > 0) {
+      setSkillsRequired((prev) => [...prev, e.target.value]);
+    }
+  };
+
+  const handleRemove = (e) => {
+    const skill = e.target.id;
+    const index = skillsRequired.indexOf(skill);
+    skillsRequired.splice(index, 1);
+    setSkillsRequired([...skillsRequired]);
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/job/posts?skillsRequired=${[
+            skillsRequired,
+          ]}&jobPosition=${jobPosition}`
+        );
+        if (response.status === 200) {
+          setJobs(response.data);
         }
+      } catch (error) {
+        console.log(error);
       }
-      
-      fetchData();
-    },[jobPosition,skillsRequired])
+    }
+
+    fetchData();
+  }, [jobPosition, skillsRequired]);
 
   return (
     <div className={styles.main_container}>
@@ -137,7 +136,7 @@ function JobPosts() {
               <button
                 className={styles.addbtn}
                 onClick={() => {
-                  navigate("/add-job");
+                  navigate("/add-job",{state:{id:"",edit:false}});
                 }}
               >
                 + Add Job
@@ -150,20 +149,16 @@ function JobPosts() {
       </div>
 
       <div className={styles.bottom_container}>
-              {
-                jobs.map((item, index) => {
-                return (
-                    <JobCard key={index} data={item} />
-               )
-           })           
-        }
+        {jobs.map((item, index) => {
+          return <JobCard key={index} data={item} />;
+        })}
       </div>
     </div>
   );
 }
 
 const codingSkills = [
-    "Javascript",
+  "Javascript",
   "Python",
   "Java",
   "C++",
@@ -174,14 +169,14 @@ const codingSkills = [
   "SQL",
   "HTML",
   "CSS",
-    "Node",
-    "React",
-    "Typescript",
-    "DSA",
-    "DBMS",
-    "MongoDb",
-    "PostgresSql",
-    "GraphQl",
+  "Node",
+  "React",
+  "Typescript",
+  "DSA",
+  "DBMS",
+  "MongoDb",
+  "PostgresSql",
+  "GraphQl",
 ];
 
 export default JobPosts;
