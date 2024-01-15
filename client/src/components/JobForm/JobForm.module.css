@@ -1,93 +1,104 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
 }
 
-.main_container{
-    padding-top: 40px;
-    padding-left: 80px;
-    width: 55vw;
-    display: flex;
-    flex-direction: column;
+.main_container {
+  padding-top: 40px;
+  padding-left: 80px;
+  width: 55vw;
+  display: flex;
+  flex-direction: column;
 }
 
-h1{
-    padding-bottom: 30px;
+h1 {
+  padding-bottom: 30px;
 }
 
-.inputdivs{
-    display: flex;
-    align-items: flex-start;
-    width: 85%;
-    padding-bottom: 13px;
-    justify-content: space-between;
+.inputdivs {
+  display: flex;
+  align-items: flex-start;
+  width: 85%;
+  padding-bottom: 13px;
+  justify-content: space-between;
 }
 
-.inputdivs label{
-    font-weight: 500;
-    font-size: 18px;
+.inputdivs label {
+  font-weight: 500;
+  font-size: 18px;
 }
 
-.inputdivs input{
-    width: 60%;
-    height: 30px;
-    outline: none;
-    border: 1.6px solid #C2C2C2;
-    padding-left: 10px;
-    border-radius: 3px;
+.inputdivs input {
+  width: 60%;
+  height: 30px;
+  outline: none;
+  border: 1.6px solid #c2c2c2;
+  padding-left: 10px;
+  border-radius: 3px;
 }
 
-.inputdivs select{
-    width: 60%;
-    height: 30px;
-    outline: none;
-    border: 1.6px solid #C2C2C2;
-    padding-left: 10px;
-    border-radius: 3px;
-    color: rgb(59, 55, 55);
-    cursor: pointer;
+.inputdivs select {
+  width: 60%;
+  height: 30px;
+  outline: none;
+  border: 1.6px solid #c2c2c2;
+  padding-left: 10px;
+  border-radius: 3px;
+  color: rgb(59, 55, 55);
+  cursor: pointer;
 }
 
-.inputdivs textarea{
-    width: 60%;
-    height: 70px;
-    outline: none;
-    border: 1.6px solid #C2C2C2;
-    padding-left: 10px;
-    border-radius: 3px;
-    color: rgb(59, 55, 55);
-    padding-top: 10px;
+.inputdivs textarea {
+  width: 60%;
+  height: 70px;
+  outline: none;
+  border: 1.6px solid #c2c2c2;
+  padding-left: 10px;
+  border-radius: 3px;
+  color: rgb(59, 55, 55);
+  padding-top: 10px;
 }
 
-.buttonContainer{
-    display: flex;
-    width: 85%;
-    justify-content: flex-end;
-    gap: 2%;
-    padding-top: 15px;
+.buttonContainer {
+  display: flex;
+  width: 85%;
+  justify-content: flex-end;
+  gap: 2%;
+  padding-top: 15px;
 }
 
-.cancelbtn{
-    outline: none;
-    border: none;
-    background-color: black;
-    color: white;
-    height: 45px;
-    width: 100px;
-    border-radius: 8px;
-    font-size: large;
-    cursor: pointer;
+.cancelbtn {
+  outline: none;
+  border: none;
+  background-color: black;
+  color: white;
+  height: 45px;
+  width: 100px;
+  border-radius: 8px;
+  font-size: large;
+  cursor: pointer;
 }
 
-.addbtn{
-    outline: none;
-    border: none;
-    background-color: #ED5353;
-    color: white;
-    width: 110px;
-    border-radius: 8px;
-    font-size: large;
-    cursor: pointer;
+.addbtn {
+  outline: none;
+  border: none;
+  background-color: #ed5353;
+  color: white;
+  width: 110px;
+  border-radius: 8px;
+  font-size: large;
+  cursor: pointer;
+}
+
+.deletebtn {
+  outline: none;
+  border: none;
+  background-color: rgb(185, 181, 181);
+  color: black;
+  width: 110px;
+  border-radius: 8px;
+  font-size: large;
+  cursor: pointer;
 }

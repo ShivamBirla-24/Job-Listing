@@ -35,7 +35,7 @@ function JobPosts() {
     async function fetchData() {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/job/posts?skillsRequired=${[
+          `${process.env.REACT_APP_API_URL}/api/job/posts?skillsRequired=${[
             skillsRequired,
           ]}&jobPosition=${jobPosition}`
         );
@@ -136,7 +136,7 @@ function JobPosts() {
               <button
                 className={styles.addbtn}
                 onClick={() => {
-                  navigate("/add-job",{state:{id:"",edit:false}});
+                  navigate("/add-job", { state: { id: "", edit: false } });
                 }}
               >
                 + Add Job

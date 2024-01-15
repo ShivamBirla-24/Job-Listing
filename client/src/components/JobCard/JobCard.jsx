@@ -1,10 +1,10 @@
-import React from 'react'
-import styles from './JobCard.module.css';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import styles from "./JobCard.module.css";
+import { useNavigate } from "react-router-dom";
 
 function JobCard({ data }) {
-    const navigate = useNavigate();
-    const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+  const user = localStorage.getItem("user");
   return (
     <div className={styles.main_card}>
       <div className={styles.left_container}>
@@ -14,9 +14,7 @@ function JobCard({ data }) {
           style={{ height: "70px", width: "50px", paddingTop: "4.5%" }}
         />
         <div className={styles.details_container}>
-          <p
-            style={{ color: "#000000", fontWeight: "500" }}
-          >
+          <p style={{ color: "#000000", fontWeight: "500" }}>
             {data.jobPosition.toUpperCase()}
           </p>
           <div className={styles.salarydetails}>
@@ -33,20 +31,37 @@ function JobCard({ data }) {
 
       <div className={styles.right_container}>
         <div className={styles.skills}>
-            {data.skillsRequired.map((item) => {
-                return (
-                   <span key={item}>{item.charAt(0).toUpperCase()+item.slice(1)}</span>
-              )
+          {data.skillsRequired.map((item) => {
+            return (
+              <span key={item}>
+                {item.charAt(0).toUpperCase() + item.slice(1)}
+              </span>
+            );
           })}
         </div>
         <div className={styles.button_container}>
-                  {token ? <button className={styles.edit} onClick={() => navigate('/add-job',
-                      { state: { id: data._id , edit:true} })}>
-                      Edit Job
-                  </button> : <></>}
-                  <button className={styles.viewdetail} onClick={() => navigate('/job-detail', {
-              state:{id:data._id}
-          })}>View Details</button>
+          { (user === data.createdBy) ? (
+            <button
+              className={styles.edit}
+              onClick={() =>
+                navigate("/add-job", { state: { id: data._id, edit: true } })
+              }
+            >
+              Edit Job
+            </button>
+          ) : (
+            <></>
+          )}
+          <button
+            className={styles.viewdetail}
+            onClick={() =>
+              navigate("/job-detail", {
+                state: { id: data._id },
+              })
+            }
+          >
+            View Details
+          </button>
         </div>
       </div>
     </div>

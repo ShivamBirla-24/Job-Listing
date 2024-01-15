@@ -57,9 +57,10 @@ function LoginForm() {
         theme: "light",
       });
     } else {
+      console.log(process.env.REACT_APP_API_URL);
       axios
-        .post("http://localhost:5000/api/auth/login", formData)
-          .then((response) => {
+        .post(`${process.env.REACT_APP_API_URL}/api/auth/login`, formData)
+        .then((response) => {
           if (response.status === 200) {
             window.localStorage.setItem("user", response.data.user);
             window.localStorage.setItem(
@@ -80,10 +81,10 @@ function LoginForm() {
             navigate("/job-posts");
           }
         })
-          .catch((error) => {
-              const response = error.response;
-            if (response.status === 403) {
-               toast.warning(response.data.message, {
+        .catch((error) => {
+          const response = error.response;
+          if (response.status === 403) {
+            toast.warning(response.data.message, {
               position: "top-center",
               autoClose: 4000,
               hideProgressBar: false,
@@ -93,30 +94,29 @@ function LoginForm() {
               progress: undefined,
               theme: "light",
             });
-              }
-            else if (response.status === 401) {
-                  toast.warning(response.data.message, {
-                      position: "top-center",
-                      autoClose: 4000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "light",
-                  });
+          } else if (response.status === 401) {
+            toast.warning(response.data.message, {
+              position: "top-center",
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
           } else {
-                toast.error("Something went wrong!! Please try again later", {
-                  position: "top-center",
-                  autoClose: 4000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                });
-              }
+            toast.error("Something went wrong!! Please try again later", {
+              position: "top-center",
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
         });
     }
   };

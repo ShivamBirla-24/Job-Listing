@@ -69,7 +69,7 @@ function RegisterForm() {
       });
     } else {
       axios
-        .post("http://localhost:5000/api/auth/register", formData)
+        .post(`${process.env.REACT_APP_API_URL}/api/auth/register`, formData)
         .then((response) => {
           if (response.status === 200) {
             window.localStorage.setItem("user", response.data.userEmail);

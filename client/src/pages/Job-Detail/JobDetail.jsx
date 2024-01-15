@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import styles from "./JobDetail.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 
 function JobDetail() {
   const [job, setJob] = useState({});
@@ -10,19 +10,18 @@ function JobDetail() {
   const location = useLocation();
   const { state } = location;
   const { id } = state;
-  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
   useEffect(() => {
-
-    axios.get(`http://localhost:5000/api/job/posts/${id}`)
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/api/job/posts/${id}`)
       .then((response) => {
         let data = response.data.jobPost;
-        data = {...data,jobPosition:data.jobPosition.toUpperCase()}
-        setJob({ ...data})
+        data = { ...data, jobPosition: data.jobPosition.toUpperCase() };
+        setJob({ ...data });
       })
-      .catch((error) => console.log(error))
-      
-  },[])
-  
+      .catch((error) => console.log(error));
+  }, [id]);
+
   return (
     <div className={styles.main_container}>
       <Navbar />
@@ -42,7 +41,17 @@ function JobDetail() {
               <p style={{ color: "#999999", fontWeight: "600" }}>Stipend</p>
               <p>Rs {job.salary}/month</p>
             </div>
-            {token ? <button onClick={()=>{navigate("/add-job",{state:{edit:true,id:job._id}})}}>Edit Job</button> : ""}
+            {user === job.createdBy ? (
+              <button
+                onClick={() => {
+                  navigate("/add-job", { state: { edit: true, id: job._id } });
+                }}
+              >
+                Edit Job
+              </button>
+            ) : (
+              ""
+            )}
           </div>
           <div className={styles.content_container}>
             <p>About company</p>
@@ -55,20 +64,19 @@ function JobDetail() {
           <div className={styles.skills_container}>
             <p>Skill(s) required</p>
             <div>
-              {job.skillsRequired && job.skillsRequired.map((skill) => {
-                return (
-                  <span className={styles.skill} key={skill}>
-                    {skill.charAt(0).toUpperCase()+skill.slice(1)}
-                  </span>
-                );
-              })}
+              {job.skillsRequired &&
+                job.skillsRequired.map((skill) => {
+                  return (
+                    <span className={styles.skill} key={skill}>
+                      {skill.charAt(0).toUpperCase() + skill.slice(1)}
+                    </span>
+                  );
+                })}
             </div>
           </div>
           <div className={styles.content_container}>
             <p>Additional Information</p>
-            <span>
-              {job.information}
-            </span>
+            <span>{job.information}</span>
           </div>
         </div>
       </div>

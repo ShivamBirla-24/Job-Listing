@@ -42,7 +42,7 @@ function JobForm() {
         setId(id);
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/job/posts/${id}`
+            `${process.env.REACT_APP_API_URL}/api/job/posts/${id}`
           );
           if (response.status === 200) {
             const data = response.data.jobPost;
@@ -116,7 +116,7 @@ function JobForm() {
     try {
       const data = { ...jobForm, recruiterName };
       const response = await axios.post(
-        "http://localhost:5000/api/job/create",
+        `${process.env.REACT_APP_API_URL}/api/job/create`,
         data,
         {
           headers: {
@@ -204,7 +204,7 @@ function JobForm() {
     try {
       const data = { ...jobForm, recruiterName };
       const response = await axios.put(
-        `http://localhost:5000/api/job/edit/${id}`,
+        `${process.env.REACT_APP_API_URL}/api/job/edit/${id}`,
         data,
         {
           headers: {
@@ -243,6 +243,42 @@ function JobForm() {
       console.log(error);
     }
   };
+
+  const handleDelete = async () => {
+      try {
+        const response = await axios.delete(
+          `${process.env.REACT_APP_API_URL}/api/job/delete/${id}`
+        );
+        
+        if (response.status === 200) {
+          toast.success(response.data.message, {
+            position: "top-center",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          navigate("/");
+        }
+        if (response.status === 404) {
+          toast.error(response.data.message, {
+            position: "top-center",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          })
+        };
+      }catch(error){
+        console.log(error);
+      }
+  }
 
   return (
     <div className={styles.main_container}>
@@ -382,9 +418,12 @@ function JobForm() {
           Cancel
         </button>
         {edit ? (
-          <button className={styles.addbtn} onClick={handleEdit}>
-            Edit Job
-          </button>
+          <>
+            <button className={styles.deletebtn} onClick={handleDelete}>Delete Job</button>
+            <button className={styles.addbtn} onClick={handleEdit}>
+              Edit Job
+            </button>
+          </>
         ) : (
           <button className={styles.addbtn} onClick={handleSubmit}>
             + Add Job
