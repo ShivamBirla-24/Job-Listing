@@ -35,7 +35,7 @@ function JobPosts() {
     async function fetchData() {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/job/posts?skillsRequired=${[
+          `https://job-listing-server-9eo0.onrender.com/api/job/posts?skillsRequired=${[
             skillsRequired,
           ]}&jobPosition=${jobPosition}`
         );

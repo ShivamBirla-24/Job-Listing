@@ -69,7 +69,10 @@ function RegisterForm() {
       });
     } else {
       axios
-        .post(`${process.env.REACT_APP_API_URL}/api/auth/register`, formData)
+        .post(
+          `https://job-listing-server-9eo0.onrender.com/api/auth/register`,
+          formData
+        )
         .then((response) => {
           if (response.status === 200) {
             window.localStorage.setItem("user", response.data.userEmail);

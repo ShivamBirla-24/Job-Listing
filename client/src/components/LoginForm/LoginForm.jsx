@@ -57,7 +57,6 @@ function LoginForm() {
         theme: "light",
       });
     } else {
-      console.log(process.env.REACT_APP_API_URL);
       axios
         .post(
           `https://job-listing-server-9eo0.onrender.com/api/auth/login`,
@@ -86,7 +85,6 @@ function LoginForm() {
         })
         .catch((error) => {
           const response = error.response;
-          console.log(error);
           if (response.status === 403) {
             toast.warning(response.data.message, {
               position: "top-center",

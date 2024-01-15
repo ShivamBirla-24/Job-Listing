@@ -13,7 +13,7 @@ function JobDetail() {
   const user = localStorage.getItem("user");
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/job/posts/${id}`)
+      .get(`https://job-listing-server-9eo0.onrender.com/api/job/posts/${id}`)
       .then((response) => {
         let data = response.data.jobPost;
         data = { ...data, jobPosition: data.jobPosition.toUpperCase() };
