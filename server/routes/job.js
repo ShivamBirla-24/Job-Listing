@@ -32,7 +32,9 @@ router.post("/create", isLoggedin, async (req, res) => {
       skillsRequired,
       information,
       recruiterName,
+      userEmail,
     } = req.body;
+    console.log(userEmail);
     //checking for all the fields are filled
     if (
       !companyName ||
@@ -58,13 +60,13 @@ router.post("/create", isLoggedin, async (req, res) => {
     if (typeof skillsRequired === "string") {
       skills = skillsRequired
         .split(",")
-        .map((skillsRequired) => skillsRequired.trim().toLowerCase())
+        .map((skillsRequired) => skillsRequired.trim().toLowerCase());
     }
     //creating the job entry in the database
     await JobDetails.create({
       companyName,
       logoUrl,
-      jobPosition:jobPosition.toLowerCase(),
+      jobPosition: jobPosition.toLowerCase(),
       salary,
       jobType,
       remote,
@@ -74,6 +76,7 @@ router.post("/create", isLoggedin, async (req, res) => {
       skillsRequired: skills,
       information,
       recruiterName,
+      createdBy:userEmail
     });
 
     res.status(200).json({
@@ -86,9 +89,10 @@ router.post("/create", isLoggedin, async (req, res) => {
 });
 
 //api for editing the job
-router.put("/edit/:jobId", isLoggedin,async (req, res) => {
+router.put("/edit/:jobId", isLoggedin, async (req, res) => {
   try {
     const { jobId } = req.params;
+    const { userEmail } = req.body;
     //checking id is valid mongoose object id or not
     if (!mongoose.Types.ObjectId.isValid(jobId)) {
       return res.status(400).json({ error: "Invalid user ID" });
@@ -105,11 +109,11 @@ router.put("/edit/:jobId", isLoggedin,async (req, res) => {
       aboutCompany,
       skillsRequired,
       information,
-      recruiterName
+      recruiterName,
     } = req.body;
-    
+
     let allSkills = [];
-    if (typeof skillsRequired === 'string') {
+    if (typeof skillsRequired === "string") {
       allSkills = skillsRequired
         .split(",")
         .map((item) => item.trim().toLowerCase());
@@ -119,32 +123,37 @@ router.put("/edit/:jobId", isLoggedin,async (req, res) => {
     const updatedData = {
       companyName,
       logoUrl,
-      jobPosition:jobPosition.toLocaleLowerCase(),
+      jobPosition: jobPosition.toLocaleLowerCase(),
       salary,
       jobType,
       remote,
       location,
       jobDescription,
       aboutCompany,
-      skillsRequired:allSkills,
+      skillsRequired: allSkills,
       information,
       recruiterName,
+      createdBy:userEmail
     };
-    const jobafterUpdate = await JobDetails.findByIdAndUpdate(jobId, updatedData, {
-      new: true,
-      runValidators:true
-    })
+    const jobafterUpdate = await JobDetails.findByIdAndUpdate(
+      jobId,
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!jobafterUpdate) {
       return res.status(404).json({
-        message:"Job Not Found!!"
-      })
+        message: "Job Not Found!!",
+      });
     }
 
     res.status(200).json({
       message: "Job Updated Successfully!",
-      updatedJob : jobafterUpdate
-    })
+      updatedJob: jobafterUpdate,
+    });
   } catch (error) {
     res.status(500).json({
       error,
@@ -159,19 +168,23 @@ router.get("/posts", async (req, res) => {
   const { jobPosition, skillsRequired } = req.query;
   try {
     let query = {};
-    
+
     if (jobPosition) {
       query.jobPosition = jobPosition.toLocaleLowerCase(); // query => {jobPosition : "Frontend"}
     }
-    
+
     if (skillsRequired) {
-      query.skillsRequired = { $in : skillsRequired.split(",").map((skill)=> skill.trim().toLocaleLowerCase())};
+      query.skillsRequired = {
+        $in: skillsRequired
+          .split(",")
+          .map((skill) => skill.trim().toLocaleLowerCase()),
+      };
     }
     const jobPosts = await JobDetails.find(query).sort({ createdAt: -1 });
     return res.status(200).json(jobPosts);
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Internal server error" })
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 

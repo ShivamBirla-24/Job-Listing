@@ -80,7 +80,7 @@ router.post("/login", async (req, res) => {
     }
 
     //token generated
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY);
+    const token = jwt.sign({ userEmail: email }, process.env.JWT_SECRET_KEY);
 
     //sending response after successfull login
     res.status(200).json({

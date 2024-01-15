@@ -13,6 +13,7 @@ const isLoggedin = (req, res, next) => {
         message: "Please Login First"
       });
     } else {
+      req.body.userEmail = decoded.userEmail;
       next();
     }
   } catch (error) {
