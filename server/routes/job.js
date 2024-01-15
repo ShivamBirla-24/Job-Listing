@@ -11,6 +11,7 @@ dotenv.config();
 
 //Job collection from database
 const JobDetails = require("../db_models/jobDetails");
+const jobDetails = require("../db_models/jobDetails");
 
 //Job route
 
@@ -76,7 +77,7 @@ router.post("/create", isLoggedin, async (req, res) => {
       skillsRequired: skills,
       information,
       recruiterName,
-      createdBy:userEmail
+      createdBy: userEmail,
     });
 
     res.status(200).json({
@@ -133,7 +134,7 @@ router.put("/edit/:jobId", isLoggedin, async (req, res) => {
       skillsRequired: allSkills,
       information,
       recruiterName,
-      createdBy:userEmail
+      createdBy: userEmail,
     };
     const jobafterUpdate = await JobDetails.findByIdAndUpdate(
       jobId,
@@ -161,6 +162,20 @@ router.put("/edit/:jobId", isLoggedin, async (req, res) => {
     });
   }
 });
+
+//api to delete the job post 
+router.delete("/delete/:jobId",async(req, res) => {
+  try {
+    const { jobId } = req.params;
+    const deletedUser = await jobDetails.findByIdAndDelete(jobId);
+    if (deletedUser) {
+      return res.status(200).json({ message: "Job deleted successfully" });
+    }
+    res.status(404).json({ message: "Job not found!" });
+  } catch{
+    res.status(500).json({ message: "Internal Server Error!" });
+  }
+})
 
 //api to list all the jobs with filters based on skills and jobPosition
 
